@@ -1,0 +1,6 @@
+@MagniseMarketAssetAPI_HostAddress = http://localhost:5230
+
+GET {{MagniseMarketAssetAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
