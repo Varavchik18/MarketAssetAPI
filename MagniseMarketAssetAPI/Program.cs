@@ -13,6 +13,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddDbContext<MarketContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddHttpClient<FintaChartsClientService_WS>();
+
 builder.Services.AddHttpClient<TokenService>(client =>
 {
     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
@@ -68,3 +70,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

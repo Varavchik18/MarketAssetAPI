@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-public class GetAssetsListQueryHandler : IRequestHandler<GetAssetsListQuery, FintachartAPIResponseDTO>
+public class GetAssetsListQueryHandler : IRequestHandler<GetAssetsListQuery, AssetsResponseDTO>
 {
     private readonly FintaChartsClientService _fintaChartsClientService;
     private readonly IUnitOfWork _unitOfWork;
@@ -13,7 +13,7 @@ public class GetAssetsListQueryHandler : IRequestHandler<GetAssetsListQuery, Fin
         _mapper = mapper;
     }
 
-    public async Task<FintachartAPIResponseDTO> Handle(GetAssetsListQuery request, CancellationToken cancellationToken)
+    public async Task<AssetsResponseDTO> Handle(GetAssetsListQuery request, CancellationToken cancellationToken)
     {
         var provider = request.Provider;
         var kind = request.Kind;
@@ -22,6 +22,8 @@ public class GetAssetsListQueryHandler : IRequestHandler<GetAssetsListQuery, Fin
         var size = request.Size ?? 10;
 
         var apiResponse =  await _fintaChartsClientService.GetAssetsListAsync(provider, kind, symbol, page, size);
+        
+        if (apiResponse.Data.Count == 0) throw new Exception("Api response is null for values you provided");
 
         foreach (var apiAsset in apiResponse.Data)
         {

@@ -1,4 +1,4 @@
-﻿public class FintachartAPIResponseDTO
+﻿public class AssetsResponseDTO
 {
     public Paging Paging { get; set; }
     public List<FintachartAssetDTO> Data { get; set; }

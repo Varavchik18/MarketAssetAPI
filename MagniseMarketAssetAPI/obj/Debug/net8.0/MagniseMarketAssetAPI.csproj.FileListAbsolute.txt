@@ -153,3 +153,4 @@ C:\Users\Alex Colba\source\repos\MagniseMarketAssetAPI\MagniseMarketAssetAPI\obj
 C:\Users\Alex Colba\source\repos\MagniseMarketAssetAPI\MagniseMarketAssetAPI\obj\Debug\net8.0\ref\MagniseMarketAssetAPI.dll
 C:\Users\Alex Colba\source\repos\MagniseMarketAssetAPI\MagniseMarketAssetAPI\bin\Debug\net8.0\AutoMapper.dll
 C:\Users\Alex Colba\source\repos\MagniseMarketAssetAPI\MagniseMarketAssetAPI\bin\Debug\net8.0\MediatR.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\Alex Colba\source\repos\MagniseMarketAssetAPI\MagniseMarketAssetAPI\obj\Debug\net8.0\MagniseMarketAssetAPI.sourcelink.json

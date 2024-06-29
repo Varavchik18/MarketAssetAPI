@@ -12,7 +12,14 @@ public class AssetsController : ControllerBase
     [HttpGet("list")]
     public async Task<IActionResult> GetAssets([FromQuery] GetAssetsListQuery query)
     {
-        var result = await _mediator.Send(query);
-        return Ok(result);
+        try
+        {
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿public class GetAssetsListQuery : IRequest<FintachartAPIResponseDTO>
+﻿public class GetAssetsListQuery : IRequest<AssetsResponseDTO>
 {
     public string? Provider { get; set; } = null;
     public string? Kind { get; set; } = null;

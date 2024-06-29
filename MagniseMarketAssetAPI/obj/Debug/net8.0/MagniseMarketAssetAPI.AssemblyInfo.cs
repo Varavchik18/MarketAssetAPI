@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MagniseMarketAssetAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+17c0e6d07254fb03763ae99598802a53baad9b57")]
 [assembly: System.Reflection.AssemblyProductAttribute("MagniseMarketAssetAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MagniseMarketAssetAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
