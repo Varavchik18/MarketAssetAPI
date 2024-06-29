@@ -1,10 +1,13 @@
-﻿using Newtonsoft.Json;
-using System.Diagnostics.Metrics;
-using System.Net.WebSockets;
-using System.Text;
-using System.Text.Json;
+﻿using System.Net.WebSockets;
 using System.Text.Json.Serialization;
+using System.Text.Json;
 
+using System.Text;
+
+/// <summary>
+/// The FintaChartsClientService_WS class manages WebSocket connections, subscriptions, and real-time data 
+/// processing for the Fintacharts service.
+/// </summary>
 public class FintaChartsClientService_WS
 {
     private readonly HttpClient _client;
@@ -14,6 +17,12 @@ public class FintaChartsClientService_WS
     private ClientWebSocket _webSocket;
     private readonly RealTimeDataStore _realTimeDataStore = new RealTimeDataStore();
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FintaChartsClientService_WS"/> class.
+    /// </summary>
+    /// <param name="client">The HttpClient instance to be used for making HTTP requests.</param>
+    /// <param name="configuration">The configuration instance to access application settings.</param>
+    /// <param name="tokenStore">The token store instance to retrieve the access token.</param>
     public FintaChartsClientService_WS(HttpClient client, IConfiguration configuration, TokenStore tokenStore)
     {
         _client = client;
@@ -23,6 +32,10 @@ public class FintaChartsClientService_WS
         _webSocket = new ClientWebSocket();
     }
 
+    /// <summary>
+    /// Ensures that the WebSocket is connected. If not, it attempts to connect.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     private async Task EnsureConnectedAsync()
     {
         if (_webSocket.State != WebSocketState.Open)
@@ -31,6 +44,10 @@ public class FintaChartsClientService_WS
         }
     }
 
+    /// <summary>
+    /// Connects to the WebSocket using the access token.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ConnectAsync()
     {
         var accessToken = _tokenStore.GetAccessToken();
@@ -38,6 +55,12 @@ public class FintaChartsClientService_WS
         await _webSocket.ConnectAsync(uriWithToken, CancellationToken.None);
     }
 
+    /// <summary>
+    /// Subscribes to real-time data updates for a specific instrument and provider.
+    /// </summary>
+    /// <param name="instrumentId">The ID of the instrument to subscribe to.</param>
+    /// <param name="provider">The provider of the instrument data.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task SubscribeAsync(string instrumentId, string provider)
     {
         await EnsureConnectedAsync();
@@ -60,6 +83,12 @@ public class FintaChartsClientService_WS
         await ReceiveMessagesAsync(instrumentId);
     }
 
+    /// <summary>
+    /// Unsubscribes from real-time data updates for a specific instrument and provider.
+    /// </summary>
+    /// <param name="instrumentId">The ID of the instrument to unsubscribe from.</param>
+    /// <param name="provider">The provider of the instrument data.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     private async Task UnsubscribeAsync(string instrumentId, string provider)
     {
         var unsubscribeMessage = new
@@ -77,6 +106,11 @@ public class FintaChartsClientService_WS
         await _webSocket.SendAsync(new ArraySegment<byte>(messageBytes), WebSocketMessageType.Text, true, CancellationToken.None);
     }
 
+    /// <summary>
+    /// Receives messages from the WebSocket and processes real-time data updates.
+    /// </summary>
+    /// <param name="instrumentId">The ID of the instrument for which messages are being received.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ReceiveMessagesAsync(string instrumentId)
     {
         var buffer = new byte[1024 * 4];
@@ -106,13 +140,17 @@ public class FintaChartsClientService_WS
                     if (realTimeData != null && realTimeData.Last != null && realTimeData.Ask != null && realTimeData.Bid != null)
                     {
                         await UnsubscribeAsync(instrumentId, message.Provider);
-                        break; 
+                        break;
                     }
                 }
             }
         }
     }
 
+    /// <summary>
+    /// Processes a WebSocket message and updates the real-time data store.
+    /// </summary>
+    /// <param name="message">The WebSocket message to process.</param>
     private void ProcessMessage(WebSocketMessage message)
     {
         PriceData last = null, ask = null, bid = null;
@@ -150,6 +188,11 @@ public class FintaChartsClientService_WS
         _realTimeDataStore.UpdateData(message.InstrumentId, last, ask, bid);
     }
 
+    /// <summary>
+    /// Gets the real-time price data for a specific instrument.
+    /// </summary>
+    /// <param name="instrumentId">The ID of the instrument.</param>
+    /// <returns>A <see cref="RealTimePriceDataDTO"/> containing the real-time data for the instrument.</returns>
     public RealTimePriceDataDTO GetRealTimeData(string instrumentId)
     {
         return _realTimeDataStore.GetData(instrumentId);

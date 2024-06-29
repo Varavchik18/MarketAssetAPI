@@ -1,11 +1,9 @@
-﻿using System;
-using System.Drawing;
-using System.Net.Http;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-
+/// <summary>
+/// The FintaChartsClientService class provides methods to interact with the Fintacharts API,
+/// including retrieving lists of assets and historical price data.
+/// </summary>
 public class FintaChartsClientService
 {
     private readonly HttpClient _client;
@@ -13,6 +11,12 @@ public class FintaChartsClientService
     private readonly TokenStore _tokenStore;
     private readonly string _accesstoken;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FintaChartsClientService"/> class.
+    /// </summary>
+    /// <param name="client">The HttpClient instance to be used for making HTTP requests.</param>
+    /// <param name="configuration">The configuration instance to access application settings.</param>
+    /// <param name="tokenStore">The token store instance to retrieve the access token.</param>
     public FintaChartsClientService(HttpClient client, IConfiguration configuration, TokenStore tokenStore)
     {
         _client = client;
@@ -21,6 +25,16 @@ public class FintaChartsClientService
         _accesstoken = _tokenStore.GetAccessToken();
     }
 
+    /// <summary>
+    /// Retrieves a list of assets from the Fintacharts API.
+    /// </summary>
+    /// <param name="provider">The provider of the assets (optional).</param>
+    /// <param name="kind">The kind of assets (optional).</param>
+    /// <param name="symbol">The symbol of the assets (optional).</param>
+    /// <param name="page">The page number for pagination (default is 1).</param>
+    /// <param name="size">The number of assets per page (default is 10).</param>
+    /// <returns>A task that represents the asynchronous operation, containing the assets response DTO.</returns>
+    /// <exception cref="UnauthorizedAccessException">Thrown when the access token is invalid.</exception>
     public async Task<AssetsResponseDTO> GetAssetsListAsync(string provider = null, string kind = null, string symbol = null, int page = 1, int size = 10)
     {
         if (string.IsNullOrEmpty(_accesstoken))
@@ -60,7 +74,17 @@ public class FintaChartsClientService
         return assetResponse;
     }
 
-
+    /// <summary>
+    /// Retrieves historical price data for a specific instrument and date range from the Fintacharts API.
+    /// </summary>
+    /// <param name="instrumentId">The ID of the instrument.</param>
+    /// <param name="provider">The provider of the instrument data.</param>
+    /// <param name="interval">The interval between data points.</param>
+    /// <param name="periodicity">The periodicity of the data.</param>
+    /// <param name="startDate">The start date for the data range.</param>
+    /// <param name="endDate">The end date for the data range.</param>
+    /// <returns>A task that represents the asynchronous operation, containing a list of historical price DTOs.</returns>
+    /// <exception cref="UnauthorizedAccessException">Thrown when the access token is invalid.</exception>
     public async Task<List<HistoricalPriceDTO>> GetHistoricalPricesDateRangeAsync(string instrumentId, string provider, int interval, string periodicity, DateTime startDate, DateTime endDate)
     {
         if (string.IsNullOrEmpty(_accesstoken))
@@ -85,6 +109,16 @@ public class FintaChartsClientService
         return historicalPricesResponse?.Data.Count > 0 ? historicalPricesResponse?.Data : throw new Exception("Api response is null for that asset");
     }
 
+    /// <summary>
+    /// Retrieves historical price data for a specific instrument and count back from the Fintacharts API.
+    /// </summary>
+    /// <param name="instrumentId">The ID of the instrument.</param>
+    /// <param name="provider">The provider of the instrument data.</param>
+    /// <param name="interval">The interval between data points.</param>
+    /// <param name="periodicity">The periodicity of the data.</param>
+    /// <param name="barsCount">The number of bars to retrieve.</param>
+    /// <returns>A task that represents the asynchronous operation, containing a list of historical price DTOs.</returns>
+    /// <exception cref="UnauthorizedAccessException">Thrown when the access token is invalid.</exception>
     public async Task<List<HistoricalPriceDTO>> GetHistoricalPricesCountBackAsync(string instrumentId, string provider, int interval, string periodicity, int barsCount)
     {
         if (string.IsNullOrEmpty(_accesstoken))
@@ -109,8 +143,14 @@ public class FintaChartsClientService
         return historicalPricesResponse?.Data ?? new List<HistoricalPriceDTO>();
     }
 
+    /// <summary>
+    /// Internal class to represent the response containing historical price data.
+    /// </summary>
     private class HistoricalPricesResponse
     {
+        /// <summary>
+        /// Gets or sets the list of historical price data.
+        /// </summary>
         public List<HistoricalPriceDTO> Data { get; set; }
     }
 

@@ -1,11 +1,10 @@
-﻿using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using Newtonsoft.Json.Linq;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// The TokenService class handles the acquisition and storage of access and refresh tokens
+/// from the Fintacharts authentication service.
+/// </summary>
 public class TokenService
 {
     private readonly HttpClient _client;
@@ -13,6 +12,13 @@ public class TokenService
     private readonly TokenStore _tokenStore;
     private readonly ILogger<TokenService> _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TokenService"/> class.
+    /// </summary>
+    /// <param name="client">The HttpClient instance to be used for making HTTP requests.</param>
+    /// <param name="configuration">The configuration instance to access application settings.</param>
+    /// <param name="tokenStore">The token store instance to save the acquired tokens.</param>
+    /// <param name="logger">The logger instance to log information and errors.</param>
     public TokenService(HttpClient client, IConfiguration configuration, TokenStore tokenStore, ILogger<TokenService> logger)
     {
         _client = client;
@@ -21,6 +27,10 @@ public class TokenService
         _logger = logger;
     }
 
+    /// <summary>
+    /// Asynchronously sets the access and refresh tokens by making a request to the authentication service.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task SetTokenAsync()
     {
         _logger.LogInformation("TokenService: SetTokenAsync is called.");

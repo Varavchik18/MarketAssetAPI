@@ -18,7 +18,6 @@
             var tokenService = scope.ServiceProvider.GetRequiredService<TokenService>();
             try
             {
-                // Викликаємо метод для отримання токену при старті програми
                 await tokenService.SetTokenAsync();
                 _logger.LogInformation("TokenService: SetTokenAsync successfully called.");
             }

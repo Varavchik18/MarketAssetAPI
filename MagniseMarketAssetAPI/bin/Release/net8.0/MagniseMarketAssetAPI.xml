@@ -1,0 +1,576 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MagniseMarketAssetAPI</name>
+    </assembly>
+    <members>
+        <member name="T:AssetsController">
+            <summary>
+            The AssetsController class handles HTTP requests related to asset data.
+            </summary>
+        </member>
+        <member name="M:AssetsController.#ctor(MediatR.IMediator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AssetsController"/> class.
+            </summary>
+            <param name="mediator">The mediator instance to send queries and commands.</param>
+        </member>
+        <member name="M:AssetsController.GetAssets(GetAssetsListQuery)">
+             <summary>
+             Retrieves a list of assets based on the provided query parameters.
+             </summary>
+             <param name="query">The query parameters to filter the assets list: 
+                Request Parameters:
+                 provider: (optional) The provider of the assets.
+                 kind: (optional) The kind of assets.
+                 symbol: (optional) The symbol of the assets.
+                 page: (optional) The page number for pagination (default is 1).
+                 size: (optional) The number of assets per page(default is 10). </param>
+             
+             <returns>An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the assets list response DTO.</returns>
+             <response code="200">Returns the assets list response DTO.</response>
+             <response code="400">If there is an error processing the request.</response>
+             <remarks>
+             Sample request:
+            
+                 {
+                "provider": "provider",
+                "kind": "equity",
+                "symbol": "AAPL",
+                "page": 1,
+                "size": 10
+            }
+            
+            
+             Sample response:
+            
+                 {
+                     "paging": {
+                         "page": 1,
+                         "pages": 10,
+                         "items": 100
+                     },
+                     "data": [
+                         {
+                             "id": "123",
+                             "symbol": "AAPL",
+                             "kind": "equity",
+                             "description": "Apple Inc.",
+                             "tickSize": 0.01,
+                             "currency": "USD",
+                             "baseCurrency": "USD",
+                             "mappings": {
+                                 "NASDAQ": {
+                                     "symbol": "AAPL",
+                                     "exchange": "NASDAQ",
+                                     "defaultOrderSize": 100
+                                 }
+                             }
+                         }
+                     ]
+                 }
+             </remarks>
+             
+        </member>
+        <member name="T:GetAssetsListQueryHandler">
+            <summary>
+            Handles the GetAssetsListQuery by interacting with the FintaChartsClientService to retrieve a list of assets,
+            maps the retrieved assets to the Asset entity, and updates the database using the UnitOfWork pattern.
+            </summary>
+        </member>
+        <member name="M:GetAssetsListQueryHandler.#ctor(FintaChartsClientService,IUnitOfWork,AutoMapper.IMapper)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GetAssetsListQueryHandler"/> class.
+            </summary>
+            <param name="fintaChartsClientService">The service to interact with Fintacharts API.</param>
+            <param name="unitOfWork">The UnitOfWork instance for database operations.</param>
+            <param name="mapper">The AutoMapper instance for mapping API responses to entity models.</param>
+        </member>
+        <member name="M:GetAssetsListQueryHandler.Handle(GetAssetsListQuery,System.Threading.CancellationToken)">
+            <summary>
+            Handles the GetAssetsListQuery request.
+            </summary>
+            <param name="request">The GetAssetsListQuery request containing parameters for filtering the assets list.</param>
+            <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
+            <returns>A task that represents the asynchronous operation, containing the assets response DTO.</returns>
+            <exception cref="T:System.Exception">Thrown when the API response contains no data.</exception>
+        </member>
+        <member name="T:GetPricesCountBackQueryHandler">
+            <summary>
+            Handles the GetPricesCountBackQuery by retrieving historical and real-time price data for a given instrument.
+            </summary>
+        </member>
+        <member name="M:GetPricesCountBackQueryHandler.#ctor(FintaChartsClientService,IUnitOfWork,AutoMapper.IMapper,FintaChartsClientService_WS)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GetPricesCountBackQueryHandler"/> class.
+            </summary>
+            <param name="fintaChartsClientService">The service to interact with Fintacharts API for historical data.</param>
+            <param name="unitOfWork">The UnitOfWork instance for database operations.</param>
+            <param name="mapper">The AutoMapper instance for mapping API responses to entity models.</param>
+            <param name="fintaChartsClientService_WS">The service to interact with Fintacharts API for real-time data.</param>
+        </member>
+        <member name="M:GetPricesCountBackQueryHandler.Handle(GetPricesCountBackQuery,System.Threading.CancellationToken)">
+            <summary>
+            Handles the GetPricesCountBackQuery request.
+            </summary>
+            <param name="request">The GetPricesCountBackQuery request containing parameters for retrieving price data.</param>
+            <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
+            <returns>A task that represents the asynchronous operation, containing the prices response DTO.</returns>
+        </member>
+        <member name="M:GetPricesCountBackQueryHandler.GetRealTimePriceData(System.String,System.String)">
+            <summary>
+            Retrieves real-time price data for a given instrument.
+            </summary>
+            <param name="instrumentId">The ID of the instrument.</param>
+            <param name="provider">The provider of the instrument data.</param>
+            <returns>A task that represents the asynchronous operation, containing the real-time price data DTO.</returns>
+        </member>
+        <member name="T:GetPricesDateRangeQueryHandler">
+            <summary>
+            Handles the GetPricesDateRangeQuery by retrieving historical and real-time price data for a given instrument
+            within a specified date range.
+            </summary>
+        </member>
+        <member name="M:GetPricesDateRangeQueryHandler.#ctor(FintaChartsClientService,IUnitOfWork,AutoMapper.IMapper,FintaChartsClientService_WS)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GetPricesDateRangeQueryHandler"/> class.
+            </summary>
+            <param name="fintaChartsClientService">The service to interact with Fintacharts API for historical data.</param>
+            <param name="unitOfWork">The UnitOfWork instance for database operations.</param>
+            <param name="mapper">The AutoMapper instance for mapping API responses to entity models.</param>
+            <param name="fintaChartsClientService_WS">The service to interact with Fintacharts API for real-time data.</param>
+        </member>
+        <member name="M:GetPricesDateRangeQueryHandler.Handle(GetPricesDateRangeQuery,System.Threading.CancellationToken)">
+            <summary>
+            Handles the GetPricesDateRangeQuery request.
+            </summary>
+            <param name="request">The GetPricesDateRangeQuery request containing parameters for retrieving price data.</param>
+            <param name="cancellationToken">A cancellation token to observe while waiting for the task to complete.</param>
+            <returns>A task that represents the asynchronous operation, containing the prices response DTO.</returns>
+        </member>
+        <member name="M:GetPricesDateRangeQueryHandler.GetRealTimePriceData(System.String,System.String)">
+            <summary>
+            Retrieves real-time price data for a given instrument.
+            </summary>
+            <param name="instrumentId">The ID of the instrument.</param>
+            <param name="provider">The provider of the instrument data.</param>
+            <returns>A task that represents the asynchronous operation, containing the real-time price data DTO.</returns>
+        </member>
+        <member name="T:HistoricalPricesController">
+            <summary>
+            The HistoricalPricesController class handles HTTP requests related to historical price data.
+            </summary>
+        </member>
+        <member name="M:HistoricalPricesController.#ctor(MediatR.IMediator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:HistoricalPricesController"/> class.
+            </summary>
+            <param name="mediator">The mediator instance to send queries and commands.</param>
+        </member>
+        <member name="M:HistoricalPricesController.GetPricesCountBack(GetPricesCountBackQuery)">
+            <summary>
+            Retrieves historical prices based on a count-back query.
+            </summary>
+            <param name="query">The query parameters to filter the historical prices:
+            <list type="bullet">
+            <item><description>instrumentId: The ID of the instrument.</description></item>
+            <item><description>provider: The provider of the data.</description></item>
+            <item><description>interval: The interval between data points.</description></item>
+            <item><description>periodicity: The periodicity of the data.</description></item>
+            <item><description>barsCount: The number of bars to retrieve.</description></item>
+            </list>
+            </param>
+            <returns>An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the prices response DTO.</returns>
+            <response code="200">Returns the prices response DTO.</response>
+            <response code="400">If there is an error processing the request.</response>
+            <remarks>
+            Sample request:
+            
+                {
+                    "instrumentId": "12345",
+                    "provider": "provider1",
+                    "interval": 1,
+                    "periodicity": "minute",
+                    "barsCount": 10
+                }
+            
+            Sample response:
+            
+                {
+                    "assetId": "12345",
+                    "realTimeData": {
+                        "last": {
+                            "timestamp": "2023-01-01T00:00:00Z",
+                            "price": 150.0,
+                            "volume": 1000
+                        },
+                        "ask": {
+                            "timestamp": "2023-01-01T00:00:00Z",
+                            "price": 151.0,
+                            "volume": 500
+                        },
+                        "bid": {
+                            "timestamp": "2023-01-01T00:00:00Z",
+                            "price": 149.0,
+                            "volume": 500
+                        }
+                    },
+                    "historicalData": [
+                        {
+                            "time": "2023-01-01T00:00:00Z",
+                            "open": 148.0,
+                            "high": 152.0,
+                            "low": 147.0,
+                            "close": 150.0,
+                            "volume": 1000
+                        }
+                    ]
+                }
+            </remarks>
+        </member>
+        <member name="M:HistoricalPricesController.GetPricesDateRange(GetPricesDateRangeQuery)">
+            <summary>
+            Retrieves historical prices based on a date range query.
+            </summary>
+            <param name="query">The query parameters to filter the historical prices:
+            <list type="bullet">
+            <item><description>instrumentId: The ID of the instrument.</description></item>
+            <item><description>provider: The provider of the data.</description></item>
+            <item><description>interval: The interval between data points.</description></item>
+            <item><description>periodicity: The periodicity of the data.</description></item>
+            <item><description>startDate: The start date for the data range.</description></item>
+            <item><description>endDate: The end date for the data range.</description></item>
+            </list>
+            </param>
+            <returns>An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the prices response DTO.</returns>
+            <response code="200">Returns the prices response DTO.</response>
+            <response code="400">If there is an error processing the request.</response>
+            <remarks>
+            Sample request:
+            
+                {
+                    "instrumentId": "12345",
+                    "provider": "provider1",
+                    "interval": 1,
+                    "periodicity": "minute",
+                    "startDate": "2023-01-01T00:00:00Z",
+                    "endDate": "2023-01-01T23:59:59Z"
+                }
+            
+            Sample response:
+            
+                {
+                    "assetId": "12345",
+                    "realTimeData": {
+                        "last": {
+                            "timestamp": "2023-01-01T00:00:00Z",
+                            "price": 150.0,
+                            "volume": 1000
+                        },
+                        "ask": {
+                            "timestamp": "2023-01-01T00:00:00Z",
+                            "price": 151.0,
+                            "volume": 500
+                        },
+                        "bid": {
+                            "timestamp": "2023-01-01T00:00:00Z",
+                            "price": 149.0,
+                            "volume": 500
+                        }
+                    },
+                    "historicalData": [
+                        {
+                            "time": "2023-01-01T00:00:00Z",
+                            "open": 148.0,
+                            "high": 152.0,
+                            "low": 147.0,
+                            "close": 150.0,
+                            "volume": 1000
+                        }
+                    ]
+                }
+            </remarks>
+        </member>
+        <member name="T:MagniseMarketAssetAPI.Migrations.InitialMigration">
+            <inheritdoc />
+        </member>
+        <member name="M:MagniseMarketAssetAPI.Migrations.InitialMigration.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:MagniseMarketAssetAPI.Migrations.InitialMigration.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:MagniseMarketAssetAPI.Migrations.InitialMigration.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:AssetRepository">
+            <summary>
+            The AssetRepository class provides methods to interact with Asset entities in the database.
+            Inherits from GenericRepository and implements IAssetRepository.
+            </summary>
+        </member>
+        <member name="M:AssetRepository.#ctor(MarketContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AssetRepository"/> class.
+            </summary>
+            <param name="context">The database context.</param>
+        </member>
+        <member name="M:AssetRepository.GetBySymbolAsync(System.String)">
+            <summary>
+            Asynchronously gets an asset by its symbol.
+            </summary>
+            <param name="symbol">The symbol of the asset.</param>
+            <returns>A task that represents the asynchronous operation, containing the asset if found.</returns>
+        </member>
+        <member name="M:AssetRepository.GetByIdAsync(System.Guid)">
+            <summary>
+            Asynchronously gets an asset by its identifier.
+            </summary>
+            <param name="assetId">The identifier of the asset.</param>
+            <returns>A task that represents the asynchronous operation, containing the asset if found.</returns>
+        </member>
+        <member name="T:HistoricalPriceRepository">
+            <summary>
+            The HistoricalPriceRepository class provides methods to interact with HistoricalPrice entities in the database.
+            Inherits from GenericRepository and implements IHistoricalPriceRepository.
+            </summary>
+        </member>
+        <member name="M:HistoricalPriceRepository.#ctor(MarketContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:HistoricalPriceRepository"/> class.
+            </summary>
+            <param name="context">The database context.</param>
+        </member>
+        <member name="M:HistoricalPriceRepository.GetHistoricalPriceListByAssetId(System.Guid)">
+            <summary>
+            Asynchronously gets a list of historical prices by asset identifier.
+            </summary>
+            <param name="assetId">The identifier of the asset.</param>
+            <returns>A task that represents the asynchronous operation, containing an enumerable of historical prices.</returns>
+        </member>
+        <member name="T:UnitOfWork">
+            <summary>
+            The UnitOfWork class coordinates the repositories and handles transactions.
+            </summary>
+        </member>
+        <member name="M:UnitOfWork.#ctor(MarketContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:UnitOfWork"/> class.
+            </summary>
+            <param name="context">The database context.</param>
+        </member>
+        <member name="P:UnitOfWork.Assets">
+            <summary>
+            Gets the asset repository.
+            </summary>
+        </member>
+        <member name="P:UnitOfWork.HistoricalPrices">
+            <summary>
+            Gets the historical price repository.
+            </summary>
+        </member>
+        <member name="M:UnitOfWork.CompleteAsync">
+            <summary>
+            Saves all changes made in the context to the database.
+            </summary>
+            <returns>A task that represents the asynchronous operation, containing the number of state entries written to the database.</returns>
+        </member>
+        <member name="M:UnitOfWork.Dispose">
+            <summary>
+            Disposes the context.
+            </summary>
+        </member>
+        <member name="T:FintaChartsClientService">
+            <summary>
+            The FintaChartsClientService class provides methods to interact with the Fintacharts API,
+            including retrieving lists of assets and historical price data.
+            </summary>
+        </member>
+        <member name="M:FintaChartsClientService.#ctor(System.Net.Http.HttpClient,Microsoft.Extensions.Configuration.IConfiguration,TokenStore)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FintaChartsClientService"/> class.
+            </summary>
+            <param name="client">The HttpClient instance to be used for making HTTP requests.</param>
+            <param name="configuration">The configuration instance to access application settings.</param>
+            <param name="tokenStore">The token store instance to retrieve the access token.</param>
+        </member>
+        <member name="M:FintaChartsClientService.GetAssetsListAsync(System.String,System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Retrieves a list of assets from the Fintacharts API.
+            </summary>
+            <param name="provider">The provider of the assets (optional).</param>
+            <param name="kind">The kind of assets (optional).</param>
+            <param name="symbol">The symbol of the assets (optional).</param>
+            <param name="page">The page number for pagination (default is 1).</param>
+            <param name="size">The number of assets per page (default is 10).</param>
+            <returns>A task that represents the asynchronous operation, containing the assets response DTO.</returns>
+            <exception cref="T:System.UnauthorizedAccessException">Thrown when the access token is invalid.</exception>
+        </member>
+        <member name="M:FintaChartsClientService.GetHistoricalPricesDateRangeAsync(System.String,System.String,System.Int32,System.String,System.DateTime,System.DateTime)">
+            <summary>
+            Retrieves historical price data for a specific instrument and date range from the Fintacharts API.
+            </summary>
+            <param name="instrumentId">The ID of the instrument.</param>
+            <param name="provider">The provider of the instrument data.</param>
+            <param name="interval">The interval between data points.</param>
+            <param name="periodicity">The periodicity of the data.</param>
+            <param name="startDate">The start date for the data range.</param>
+            <param name="endDate">The end date for the data range.</param>
+            <returns>A task that represents the asynchronous operation, containing a list of historical price DTOs.</returns>
+            <exception cref="T:System.UnauthorizedAccessException">Thrown when the access token is invalid.</exception>
+        </member>
+        <member name="M:FintaChartsClientService.GetHistoricalPricesCountBackAsync(System.String,System.String,System.Int32,System.String,System.Int32)">
+            <summary>
+            Retrieves historical price data for a specific instrument and count back from the Fintacharts API.
+            </summary>
+            <param name="instrumentId">The ID of the instrument.</param>
+            <param name="provider">The provider of the instrument data.</param>
+            <param name="interval">The interval between data points.</param>
+            <param name="periodicity">The periodicity of the data.</param>
+            <param name="barsCount">The number of bars to retrieve.</param>
+            <returns>A task that represents the asynchronous operation, containing a list of historical price DTOs.</returns>
+            <exception cref="T:System.UnauthorizedAccessException">Thrown when the access token is invalid.</exception>
+        </member>
+        <member name="T:FintaChartsClientService.HistoricalPricesResponse">
+            <summary>
+            Internal class to represent the response containing historical price data.
+            </summary>
+        </member>
+        <member name="P:FintaChartsClientService.HistoricalPricesResponse.Data">
+            <summary>
+            Gets or sets the list of historical price data.
+            </summary>
+        </member>
+        <member name="T:FintaChartsClientService_WS">
+            <summary>
+            The FintaChartsClientService_WS class manages WebSocket connections, subscriptions, and real-time data 
+            processing for the Fintacharts service.
+            </summary>
+        </member>
+        <member name="M:FintaChartsClientService_WS.#ctor(System.Net.Http.HttpClient,Microsoft.Extensions.Configuration.IConfiguration,TokenStore)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FintaChartsClientService_WS"/> class.
+            </summary>
+            <param name="client">The HttpClient instance to be used for making HTTP requests.</param>
+            <param name="configuration">The configuration instance to access application settings.</param>
+            <param name="tokenStore">The token store instance to retrieve the access token.</param>
+        </member>
+        <member name="M:FintaChartsClientService_WS.EnsureConnectedAsync">
+            <summary>
+            Ensures that the WebSocket is connected. If not, it attempts to connect.
+            </summary>
+            <returns>A task that represents the asynchronous operation.</returns>
+        </member>
+        <member name="M:FintaChartsClientService_WS.ConnectAsync">
+            <summary>
+            Connects to the WebSocket using the access token.
+            </summary>
+            <returns>A task that represents the asynchronous operation.</returns>
+        </member>
+        <member name="M:FintaChartsClientService_WS.SubscribeAsync(System.String,System.String)">
+            <summary>
+            Subscribes to real-time data updates for a specific instrument and provider.
+            </summary>
+            <param name="instrumentId">The ID of the instrument to subscribe to.</param>
+            <param name="provider">The provider of the instrument data.</param>
+            <returns>A task that represents the asynchronous operation.</returns>
+        </member>
+        <member name="M:FintaChartsClientService_WS.UnsubscribeAsync(System.String,System.String)">
+            <summary>
+            Unsubscribes from real-time data updates for a specific instrument and provider.
+            </summary>
+            <param name="instrumentId">The ID of the instrument to unsubscribe from.</param>
+            <param name="provider">The provider of the instrument data.</param>
+            <returns>A task that represents the asynchronous operation.</returns>
+        </member>
+        <member name="M:FintaChartsClientService_WS.ReceiveMessagesAsync(System.String)">
+            <summary>
+            Receives messages from the WebSocket and processes real-time data updates.
+            </summary>
+            <param name="instrumentId">The ID of the instrument for which messages are being received.</param>
+            <returns>A task that represents the asynchronous operation.</returns>
+        </member>
+        <member name="M:FintaChartsClientService_WS.ProcessMessage(WebSocketMessage)">
+            <summary>
+            Processes a WebSocket message and updates the real-time data store.
+            </summary>
+            <param name="message">The WebSocket message to process.</param>
+        </member>
+        <member name="M:FintaChartsClientService_WS.GetRealTimeData(System.String)">
+            <summary>
+            Gets the real-time price data for a specific instrument.
+            </summary>
+            <param name="instrumentId">The ID of the instrument.</param>
+            <returns>A <see cref="T:RealTimePriceDataDTO"/> containing the real-time data for the instrument.</returns>
+        </member>
+        <member name="T:RealTimeDataStore">
+            <summary>
+            The RealTimeDataStore class manages the storage and retrieval of real-time price data for instruments.
+            </summary>
+        </member>
+        <member name="M:RealTimeDataStore.UpdateData(System.Guid,PriceData,PriceData,PriceData)">
+            <summary>
+            Updates the real-time data for a specific instrument.
+            </summary>
+            <param name="instrumentId">The ID of the instrument.</param>
+            <param name="last">The last price data.</param>
+            <param name="ask">The ask price data.</param>
+            <param name="bid">The bid price data.</param>
+        </member>
+        <member name="M:RealTimeDataStore.GetData(System.String)">
+            <summary>
+            Retrieves the real-time price data for a specific instrument.
+            </summary>
+            <param name="instrumentId">The ID of the instrument.</param>
+            <returns>A <see cref="T:RealTimePriceDataDTO"/> containing the real-time data for the instrument, or null if no data exists.</returns>
+        </member>
+        <member name="T:TokenService">
+            <summary>
+            The TokenService class handles the acquisition and storage of access and refresh tokens
+            from the Fintacharts authentication service.
+            </summary>
+        </member>
+        <member name="M:TokenService.#ctor(System.Net.Http.HttpClient,Microsoft.Extensions.Configuration.IConfiguration,TokenStore,Microsoft.Extensions.Logging.ILogger{TokenService})">
+            <summary>
+            Initializes a new instance of the <see cref="T:TokenService"/> class.
+            </summary>
+            <param name="client">The HttpClient instance to be used for making HTTP requests.</param>
+            <param name="configuration">The configuration instance to access application settings.</param>
+            <param name="tokenStore">The token store instance to save the acquired tokens.</param>
+            <param name="logger">The logger instance to log information and errors.</param>
+        </member>
+        <member name="M:TokenService.SetTokenAsync">
+            <summary>
+            Asynchronously sets the access and refresh tokens by making a request to the authentication service.
+            </summary>
+            <returns>A task that represents the asynchronous operation.</returns>
+        </member>
+        <member name="T:TokenStore">
+            <summary>
+            The TokenStore class manages the storage and retrieval of access and refresh tokens,
+            along with their expiration times.
+            </summary>
+        </member>
+        <member name="M:TokenStore.GetAccessToken">
+            <summary>
+            Gets the access token if it is valid and not expired.
+            </summary>
+            <returns>The access token if valid; otherwise, null.</returns>
+        </member>
+        <member name="M:TokenStore.GetRefreshToken">
+            <summary>
+            Gets the refresh token if it is valid and not expired.
+            </summary>
+            <returns>The refresh token if valid; otherwise, null.</returns>
+        </member>
+        <member name="M:TokenStore.SetToken(System.String,System.Int32,System.String,System.Int32)">
+            <summary>
+            Sets the access and refresh tokens along with their expiration times.
+            </summary>
+            <param name="token">The access token.</param>
+            <param name="expiresIn">The access token's time to live in seconds.</param>
+            <param name="refreshToken">The refresh token.</param>
+            <param name="refreshTokenExpiresIn">The refresh token's time to live in seconds.</param>
+        </member>
+    </members>
+</doc>
