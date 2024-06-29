@@ -11,7 +11,7 @@ To run the project using Docker, follow these steps:
 
 2. **Clone the repository**:
    ```sh
-   git clone https://github.com/your-repo/magnise-market-asset-api.git
+   git clone https://github.com/Varavchik18/MarketAssetAPI.git
 
 3. **Ensure that compose.yaml is present in the root directory**
 4. **Build and Run Containers:**
@@ -33,7 +33,7 @@ Once the containers are up and running, you can access the API at:
     https://www.microsoft.com/en-us/sql-server/sql-server-downloads
 
 3. **Clone the repository:**
-    git clone https://github.com/your-repo/magnise-market-asset-api.git
+    git clone https://github.com/Varavchik18/MarketAssetAPI.git
     cd magnise-market-asset-api
 
 4. **Update Connection String:**
