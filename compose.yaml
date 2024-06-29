@@ -1,0 +1,28 @@
+services:
+  server:
+    build:
+      context: .
+      target: final
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db;Database=MarketDB;User=sa;Password=YourStrong!Password;TrustServerCertificate=True;Encrypt=False
+  db:
+    image: mcr.microsoft.com/mssql/server:latest
+    restart: always
+    environment:
+      SA_PASSWORD: "YourStrong!Password"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - db-data:/var/opt/mssql
+    healthcheck:
+      test: [ "CMD", "/opt/mssql-tools/bin/sqlcmd", "-U", "sa", "-P", "YourStrong!Password", "-Q", "SELECT 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  db-data:

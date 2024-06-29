@@ -11,7 +11,11 @@ builder.Services.AddAutoMapper(typeof(FintachartProfile));
 builder.Services.AddAuthorization();
 
 builder.Services.AddDbContext<MarketContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions => sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorNumbersToAdd: null)));
 
 builder.Services.AddHttpClient<FintaChartsClientService_WS>();
 
@@ -52,17 +56,26 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
-
-app.Run();
-
-if (app.Environment.IsDevelopment())
+else
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        try
+        {
+            var context = services.GetRequiredService<MarketContext>();
+            context.Database.Migrate();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred while migrating the database.");
+        }
+    }
+
+    app.UseSwagger(c =>
+    {
+        c.RouteTemplate = "swagger/{documentName}/swagger.json";
+    });
 }
 
 app.UseHttpsRedirection();

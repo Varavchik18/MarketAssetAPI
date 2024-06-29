@@ -1,9 +1,12 @@
 #!/bin/bash
 set -e
 
-echo "Applying EF Core migrations..."
-dotnet ef database update --project /src/MagniseMarketAssetAPI/MagniseMarketAssetAPI.csproj
-echo "Migrations applied."
+echo "Checking installed dotnet tools..."
+dotnet tool list -g
 
-echo "Starting the application..."
-dotnet MagniseMarketAssetAPI.dll
+echo "Listing directories in the current directory..."
+ls -d */
+echo "Listing files in the current directory..."
+ls -l
+echo "Current location ... "
+pwd
