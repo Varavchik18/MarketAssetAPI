@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
-using System.Diagnostics.Metrics;
+﻿using Microsoft.AspNetCore.SignalR;
 using System.Net.WebSockets;
-using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json;
+using System.Text;
+using MagniseMarketAssetAPI.Services;
 
 public class FintaChartsClientService_WS
 {
@@ -13,14 +13,16 @@ public class FintaChartsClientService_WS
     private readonly Uri _webSocketUri;
     private ClientWebSocket _webSocket;
     private readonly RealTimeDataStore _realTimeDataStore = new RealTimeDataStore();
+    private readonly IHubContext<RealTimePriceHub> _hubContext;
 
-    public FintaChartsClientService_WS(HttpClient client, IConfiguration configuration, TokenStore tokenStore)
+    public FintaChartsClientService_WS(HttpClient client, IConfiguration configuration, TokenStore tokenStore, IHubContext<RealTimePriceHub> hubContext)
     {
         _client = client;
         _configuration = configuration;
         _tokenStore = tokenStore;
         _webSocketUri = new Uri(_configuration["Fintacharts:URI_WSS"]);
         _webSocket = new ClientWebSocket();
+        _hubContext = hubContext;
     }
 
     private async Task EnsureConnectedAsync()
@@ -57,10 +59,10 @@ public class FintaChartsClientService_WS
         await _webSocket.SendAsync(new ArraySegment<byte>(messageBytes), WebSocketMessageType.Text, true, CancellationToken.None);
 
         // Start receiving messages
-        await ReceiveMessagesAsync(instrumentId);
+        _ = Task.Run(() => ReceiveMessagesAsync(instrumentId));
     }
 
-    private async Task UnsubscribeAsync(string instrumentId, string provider)
+    public async Task UnsubscribeAsync(string instrumentId, string provider)
     {
         var unsubscribeMessage = new
         {
@@ -77,7 +79,7 @@ public class FintaChartsClientService_WS
         await _webSocket.SendAsync(new ArraySegment<byte>(messageBytes), WebSocketMessageType.Text, true, CancellationToken.None);
     }
 
-    public async Task ReceiveMessagesAsync(string instrumentId)
+    private async Task ReceiveMessagesAsync(string instrumentId)
     {
         var buffer = new byte[1024 * 4];
         while (_webSocket.State == WebSocketState.Open)
@@ -102,11 +104,12 @@ public class FintaChartsClientService_WS
                 if (message.Type == "l1-update")
                 {
                     ProcessMessage(message);
+
                     var realTimeData = _realTimeDataStore.GetData(instrumentId);
-                    if (realTimeData != null && realTimeData.Last != null && realTimeData.Ask != null && realTimeData.Bid != null)
+                    if (realTimeData != null)
                     {
-                        await UnsubscribeAsync(instrumentId, message.Provider);
-                        break; 
+                        // Надсилаємо оновлення ціни всім підписаним клієнтам
+                        await _hubContext.Clients.All.SendAsync("ReceivePriceUpdate", realTimeData);
                     }
                 }
             }

@@ -1,3 +1,4 @@
+using MagniseMarketAssetAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
 using System.Reflection;
@@ -7,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 builder.Services.AddAutoMapper(typeof(FintachartProfile));
+
+builder.Services.AddSignalR();
 
 builder.Services.AddAuthorization();
 
@@ -76,6 +79,14 @@ else
         }
     }
 }
+app.UseRouting();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapHub<RealTimePriceHub>("/priceHub");
+});
+
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
