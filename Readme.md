@@ -143,13 +143,13 @@ Interacts with the FintaChartsClientService to fetch asset data from the FintaCh
 Endpoint interacts with the FintaChartsClientService to fetch historical price data within a specified date range. It also subscribes to real-time price data using the FintaChartsClientService_WS to provide the most recent market prices. The response includes both the historical price data and the current real-time data for the specified instrument.
 
 ### Request Parameters
-    | Parameter     | Type     | Description                            |
-    |---------------|----------|----------------------------------------|
-    | InstrumentId  | string   | The ID of the instrument               |
-    | Provider      | string   | The provider of the price data         |
-    | Interval      | int      | The interval for the price data        |
-    | Periodicity   | string   | The periodicity of the price data      |
-    | BarsCount     | int      | The number of bars to retrieve         |
+    | Parameter     | Type     | Description                                       |
+    |---------------|----------|---------------------------------------------------|
+    | InstrumentId  | string   | The ID of the instrument (required)               |
+    | Provider      | string   | The provider of the price data (required)         |
+    | Interval      | int      | The interval for the price data (required)        |
+    | Periodicity   | string   | The periodicity of the price data (required)      |
+    | BarsCount     | int      | The number of bars to retrieve (required)         |
 
 ### Request Example
     http
@@ -196,14 +196,14 @@ Endpoint interacts with the FintaChartsClientService to fetch historical price d
 Endpoint interacts with the FintaChartsClientService to fetch historical price data within a specified date range. It also subscribes to real-time price data using the FintaChartsClientService_WS to provide the most recent market prices. The response includes both the historical price data and the current real-time data for the specified instrument.
     
 ### Request Parameters
-    | Parameter     | Type     | Description                                 |
-    |---------------|----------|---------------------------------------------|
-    | InstrumentId  | string   | The ID of the instrument                    |
-    | Provider      | string   | The provider of the price data              |
-    | Interval      | int      | The interval for the price data             |
-    | Periodicity   | string   | The periodicity of the price data           |
-    | StartDate     | DateTime | The number of bars to retrieve  (YYYY-MM-DD)|
-    | EndDate       | DateTime | The number of bars to retrieve  (YYYY-MM-DD)|
+    | Parameter     | Type     | Description                                            |
+    |---------------|----------|--------------------------------------------------------|
+    | InstrumentId  | string   | The ID of the instrument (required)                    |
+    | Provider      | string   | The provider of the price data (required)              |
+    | Interval      | int      | The interval for the price data (required)             |
+    | Periodicity   | string   | The periodicity of the price data (required)           |
+    | StartDate     | DateTime | The number of bars to retrieve  (YYYY-MM-DD) (required)|
+    | EndDate       | DateTime | The number of bars to retrieve  (YYYY-MM-DD) (required)|
 
 ### Request Example
     http
