@@ -160,12 +160,12 @@ Endpoint interacts with the FintaChartsClientService to fetch historical price d
     "assetId": "string",
     "historicalData": [
         {
-        "time": "DateTime",
-        "open": "decimal",
-        "high": "decimal",
-        "low": "decimal",
-        "close": "decimal",
-        "volume": "long"
+        "t": "DateTime",
+        "o": "decimal",
+        "h": "decimal",
+        "l": "decimal",
+        "c": "decimal",
+        "v": "long"
         }
     ]
     }
@@ -176,12 +176,12 @@ Endpoint interacts with the FintaChartsClientService to fetch historical price d
     "assetId": "123",
     "historicalData": [
         {
-        "time": "2024-06-28T00:00:00Z",
-        "open": 148.50,
-        "high": 150.50,
-        "low": 148.00,
-        "close": 150.00,
-        "volume": 2000
+        "t": "2024-06-28T00:00:00Z",
+        "o": 148.50,
+        "h": 150.50,
+        "l": 148.00,
+        "c": 150.00,
+        "v": 2000
         }
     ]
     }
@@ -214,12 +214,12 @@ Endpoint interacts with the FintaChartsClientService to fetch historical price d
     "assetId": "string",
     "historicalData": [
         {
-        "time": "DateTime",
-        "open": "decimal",
-        "high": "decimal",
-        "low": "decimal",
-        "close": "decimal",
-        "volume": "long"
+        "t": "DateTime",
+        "o": "decimal",
+        "h": "decimal",
+        "l": "decimal",
+        "c": "decimal",
+        "v": "long"
         }
     ]
     }
@@ -231,12 +231,12 @@ Endpoint interacts with the FintaChartsClientService to fetch historical price d
     "assetId": "123",
     "historicalData": [
         {
-        "time": "2024-06-28T00:00:00Z",
-        "open": 148.50,
-        "high": 150.50,
-        "low": 148.00,
-        "close": 150.00,
-        "volume": 2000
+        "t": "2024-06-28T00:00:00Z",
+        "o": 148.50,
+        "h": 150.50,
+        "l": 148.00,
+        "c": 150.00,
+        "v": 2000
         }
     ]
     }
