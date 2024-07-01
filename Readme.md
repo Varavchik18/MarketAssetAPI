@@ -47,7 +47,7 @@ To run the project locally, follow these steps:
     Open a terminal or command prompt and navigate to the project directory. Run the following commands to apply migrations and update the database:
     dotnet ef database update
 6. **Run the application**
-dotnet run
+    dotnet run
 7. **Access the API**
     Once the application is running, you can access the API documentation via Swagger at:
     http://localhost:49149/swagger
