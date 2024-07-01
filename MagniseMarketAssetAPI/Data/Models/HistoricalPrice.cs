@@ -1,13 +1,26 @@
-﻿public class HistoricalPrice
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+public class HistoricalPrice
 {
-    public int Id {  get; set; }
+    public int Id { get; set; }
     public Guid AssetId { get; set; }
     public DateTimeOffset Time { get; set; }
-    public decimal Open { get; set; } 
-    public decimal High { get; set; } 
-    public decimal Low { get; set; } 
-    public decimal Close { get; set; } 
-    public int Volume { get; set; }
+
+    [Column(TypeName = "decimal(23, 15)")]
+    public decimal Open { get; set; }
+
+    [Column(TypeName = "decimal(23, 15)")]
+
+    public decimal High { get; set; }
+
+    [Column(TypeName = "decimal(23, 15)")]
+
+    public decimal Low { get; set; }
+
+    [Column(TypeName = "decimal(23, 15)")]
+    public decimal Close { get; set; }
+
+    public long Volume { get; set; }
 
     public Asset Asset { get; set; }
 }

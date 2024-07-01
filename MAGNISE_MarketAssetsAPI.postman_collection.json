@@ -1,0 +1,147 @@
+{
+	"info": {
+		"_postman_id": "e4d445e5-ed0a-44ea-bf3c-84d24feeeb06",
+		"name": "MAGNISE_MarketAssetsAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18749904"
+	},
+	"item": [
+		{
+			"name": "AssetsList",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/assets/list?provider=oanda",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"assets",
+						"list"
+					],
+					"query": [
+						{
+							"key": "provider",
+							"value": "oanda"
+						},
+						{
+							"key": "kind",
+							"value": "forex",
+							"disabled": true
+						},
+						{
+							"key": "symbol",
+							"value": "EUR/USD",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "size",
+							"value": "10",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HistoricalPricesCountBack",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/historicalprices/count-back?instrumentId=ad9e5345-4c3b-41fc-9437-1d253f62db52&provider=oanda&interval=2&periodicity=hour&barsCount=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"historicalprices",
+						"count-back"
+					],
+					"query": [
+						{
+							"key": "instrumentId",
+							"value": "ad9e5345-4c3b-41fc-9437-1d253f62db52"
+						},
+						{
+							"key": "provider",
+							"value": "oanda"
+						},
+						{
+							"key": "interval",
+							"value": "2"
+						},
+						{
+							"key": "periodicity",
+							"value": "hour"
+						},
+						{
+							"key": "barsCount",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HistoricalPricesDateRange",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/historicalprices/date-range?instrumentId=ad9e5345-4c3b-41fc-9437-1d253f62db52&provider=oanda&interval=1&periodicity=hour&startDate=2024-05-06&endDate=2024-05-07",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"historicalprices",
+						"date-range"
+					],
+					"query": [
+						{
+							"key": "instrumentId",
+							"value": "ad9e5345-4c3b-41fc-9437-1d253f62db52"
+						},
+						{
+							"key": "provider",
+							"value": "oanda"
+						},
+						{
+							"key": "interval",
+							"value": "1"
+						},
+						{
+							"key": "periodicity",
+							"value": "hour"
+						},
+						{
+							"key": "startDate",
+							"value": "2024-05-06"
+						},
+						{
+							"key": "endDate",
+							"value": "2024-05-07"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

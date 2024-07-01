@@ -58,7 +58,6 @@ public class FintaChartsClientService_WS
         var messageBytes = Encoding.UTF8.GetBytes(messageJson);
         await _webSocket.SendAsync(new ArraySegment<byte>(messageBytes), WebSocketMessageType.Text, true, CancellationToken.None);
 
-        // Start receiving messages
         _ = Task.Run(() => ReceiveMessagesAsync(instrumentId));
     }
 
@@ -108,7 +107,6 @@ public class FintaChartsClientService_WS
                     var realTimeData = _realTimeDataStore.GetData(instrumentId);
                     if (realTimeData != null)
                     {
-                        // Надсилаємо оновлення ціни всім підписаним клієнтам
                         await _hubContext.Clients.All.SendAsync("ReceivePriceUpdate", realTimeData);
                     }
                 }

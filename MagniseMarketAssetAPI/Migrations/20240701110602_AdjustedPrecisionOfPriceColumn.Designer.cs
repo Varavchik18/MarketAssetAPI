@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MagniseMarketAssetAPI.Migrations
 {
     [DbContext(typeof(MarketContext))]
-    partial class MarketContextModelSnapshot : ModelSnapshot
+    [Migration("20240701110602_AdjustedPrecisionOfPriceColumn")]
+    partial class AdjustedPrecisionOfPriceColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,16 +103,16 @@ namespace MagniseMarketAssetAPI.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Close")
-                        .HasColumnType("decimal(23, 15)");
+                        .HasColumnType("decimal(38, 30)");
 
                     b.Property<decimal>("High")
-                        .HasColumnType("decimal(23, 15)");
+                        .HasColumnType("decimal(38, 30)");
 
                     b.Property<decimal>("Low")
-                        .HasColumnType("decimal(23, 15)");
+                        .HasColumnType("decimal(38, 30)");
 
                     b.Property<decimal>("Open")
-                        .HasColumnType("decimal(23, 15)");
+                        .HasColumnType("decimal(38, 30)");
 
                     b.Property<DateTimeOffset>("Time")
                         .HasColumnType("datetimeoffset");

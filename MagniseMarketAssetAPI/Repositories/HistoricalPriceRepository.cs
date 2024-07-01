@@ -10,4 +10,11 @@ public class HistoricalPriceRepository : GenericRepository<HistoricalPrice>, IHi
     {
         return await _context.HistoricalPrices.Where(h => h.AssetId == assetId).ToListAsync();
     }
+
+    public async Task<HistoricalPrice> GetHistoricalPriceByAssetIdAndTime(Guid assetId, DateTimeOffset time)
+    {
+        return await _context.HistoricalPrices
+            .FirstOrDefaultAsync(hp => hp.AssetId == assetId && hp.Time == time);
+    }
+
 }

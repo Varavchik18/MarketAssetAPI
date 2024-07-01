@@ -22,7 +22,7 @@ Once the containers are up and running, you can access the API at:
     http://localhost:8080/
 
 ### 2. Running locally
-    To run the project locally, follow these steps:
+To run the project locally, follow these steps:
 
 1. **Install .NET 8 SDK:**
     Ensure you have the .NET 8 SDK installed on your machine. You can download and install it from here:
@@ -54,6 +54,9 @@ dotnet run
     http://localhost:49149
 
 ## API Documentation
+If you are using postman to test the API you can import requests collection that located in 
+    MAGNISE_MarketAssetsAPI.postman_collection.json 
+in the root folder of a project
 
 ## 1. Get Assets List
 
@@ -61,7 +64,7 @@ dotnet run
     `GET /api/assets/list`
 
 ### Description
-    Interacts with the FintaChartsClientService to fetch asset data from the FintaCharts API based on the query parameters provided by the user. It then maps the API response to the internal asset model and updates the database with the retrieved assets. The response includes paging information and a list of assets matching the query criteria.
+Interacts with the FintaChartsClientService to fetch asset data from the FintaCharts API based on the query parameters provided by the user. It then maps the API response to the internal asset model and updates the database with the retrieved assets. The response includes paging information and a list of assets matching the query criteria.
 
 ### Request Parameters
     | Parameter | Type     | Description                                      |
@@ -137,7 +140,7 @@ dotnet run
     `GET /api/historicalprices/count-back`
 
 ### Description
-    Endpoint interacts with the FintaChartsClientService to fetch historical price data within a specified date range. It also subscribes to real-time price data using the FintaChartsClientService_WS to provide the most recent market prices. The response includes both the historical price data and the current real-time data for the specified instrument.
+Endpoint interacts with the FintaChartsClientService to fetch historical price data within a specified date range. It also subscribes to real-time price data using the FintaChartsClientService_WS to provide the most recent market prices. The response includes both the historical price data and the current real-time data for the specified instrument.
 
 ### Request Parameters
     | Parameter     | Type     | Description                            |
@@ -155,23 +158,6 @@ dotnet run
 ### Response Body
     {
     "assetId": "string",
-    "realTimeData": {
-        "last": {
-        "timestamp": "DateTime",
-        "price": "decimal",
-        "volume": "long"
-        },
-        "ask": {
-        "timestamp": "DateTime",
-        "price": "decimal",
-        "volume": "long"
-        },
-        "bid": {
-        "timestamp": "DateTime",
-        "price": "decimal",
-        "volume": "long"
-        }
-    },
     "historicalData": [
         {
         "time": "DateTime",
@@ -188,23 +174,6 @@ dotnet run
 ### Response Example:
     {
     "assetId": "123",
-    "realTimeData": {
-        "last": {
-        "timestamp": "2024-06-29T12:34:56Z",
-        "price": 150.25,
-        "volume": 1000
-        },
-        "ask": {
-        "timestamp": "2024-06-29T12:34:56Z",
-        "price": 150.30,
-        "volume": 500
-        },
-        "bid": {
-        "timestamp": "2024-06-29T12:34:56Z",
-        "price": 150.20,
-        "volume": 500
-        }
-    },
     "historicalData": [
         {
         "time": "2024-06-28T00:00:00Z",
@@ -224,7 +193,7 @@ dotnet run
     `GET /api/historicalprices/date-range`
 
 ### Description
-    Endpoint interacts with the FintaChartsClientService to fetch historical price data within a specified date range. It also subscribes to real-time price data using the FintaChartsClientService_WS to provide the most recent market prices. The response includes both the historical price data and the current real-time data for the specified instrument.
+Endpoint interacts with the FintaChartsClientService to fetch historical price data within a specified date range. It also subscribes to real-time price data using the FintaChartsClientService_WS to provide the most recent market prices. The response includes both the historical price data and the current real-time data for the specified instrument.
     
 ### Request Parameters
     | Parameter     | Type     | Description                                 |
@@ -243,23 +212,6 @@ dotnet run
 ### Response Body
     {
     "assetId": "string",
-    "realTimeData": {
-        "last": {
-        "timestamp": "DateTime",
-        "price": "decimal",
-        "volume": "long"
-        },
-        "ask": {
-        "timestamp": "DateTime",
-        "price": "decimal",
-        "volume": "long"
-        },
-        "bid": {
-        "timestamp": "DateTime",
-        "price": "decimal",
-        "volume": "long"
-        }
-    },
     "historicalData": [
         {
         "time": "DateTime",
@@ -277,23 +229,6 @@ dotnet run
 ### Response Example:
     {
     "assetId": "123",
-    "realTimeData": {
-        "last": {
-        "timestamp": "2024-06-29T12:34:56Z",
-        "price": 150.25,
-        "volume": 1000
-        },
-        "ask": {
-        "timestamp": "2024-06-29T12:34:56Z",
-        "price": 150.30,
-        "volume": 500
-        },
-        "bid": {
-        "timestamp": "2024-06-29T12:34:56Z",
-        "price": 150.20,
-        "volume": 500
-        }
-    },
     "historicalData": [
         {
         "time": "2024-06-28T00:00:00Z",
@@ -305,4 +240,47 @@ dotnet run
         }
     ]
     }
+
+## 4. Websocket port to subscribe on the realtime price updates:
+### Hub url: 
+    ws://localhost:8080/priceHub
+### Subscription message: 
+    {
+    "protocol": "json",
+    "version": 1
+    }
+
+
+    {
+        "type": 1,
+        "target": "SubscribeToPriceUpdates",
+        "arguments": ["ad9e5345-4c3b-41fc-9437-1d253f62db52", "simulation"]
+    }
+
+### ENSURE THAT SPECIFIC SYMBOL AT THE END IS PRESENT IN THE MEESAGE IF YOU ARE USING POSTMAN TO TEST
+### Response Example: 
+        {
+        "type": 1,
+        "target": "ReceivePriceUpdate",
+        "arguments": [
+            {
+                "last": {
+                    "timestamp": "2024-07-01T11:33:48.4788588+00:00",
+                    "price": 227.04,
+                    "volume": 3297
+                },
+                "ask": {
+                    "timestamp": "2024-07-01T11:33:48.2543191+00:00",
+                    "price": 227.04,
+                    "volume": 990
+                },
+                "bid": {
+                    "timestamp": "2024-07-01T11:33:47.9263668+00:00",
+                    "price": 226.83,
+                    "volume": 160
+                }
+            }
+        ]
+    }
+
 

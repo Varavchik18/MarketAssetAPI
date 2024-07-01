@@ -29,6 +29,23 @@ public class MarketContext : DbContext
         modelBuilder.Entity<HistoricalPrice>()
             .HasKey(hp => hp.Id);
 
+        modelBuilder.Entity<HistoricalPrice>()
+            .Property(hp => hp.Open)
+            .HasColumnType("decimal(23, 15)");
+
+        modelBuilder.Entity<HistoricalPrice>()
+            .Property(hp => hp.High)
+            .HasColumnType("decimal(23, 15)");
+
+        modelBuilder.Entity<HistoricalPrice>()
+            .Property(hp => hp.Low)
+            .HasColumnType("decimal(23, 15)");
+
+        modelBuilder.Entity<HistoricalPrice>()
+            .Property(hp => hp.Close)
+            .HasColumnType("decimal(23, 15)");
+
         base.OnModelCreating(modelBuilder);
     }
+
 }
