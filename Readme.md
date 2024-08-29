@@ -1,5 +1,5 @@
-# MAGNISE MARKET ASSET API DESCRIPTION
-    Welcome to the MAGNISE MARKET ASSET API documentation. This API provides endpoints for retrieving asset information and historical price data, including real-time market prices. The API supports filtering, pagination, and various query parameters to customize the data retrieval according to user requirements.
+#  MARKET ASSET API DESCRIPTION
+    Welcome to the  MARKET ASSET API documentation. This API provides endpoints for retrieving asset information and historical price data, including real-time market prices. The API supports filtering, pagination, and various query parameters to customize the data retrieval according to user requirements.
 ## GETTING STARTED
 
 ### 1. Running via Docker
